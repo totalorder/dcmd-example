@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+source /shared/bash-setup
+source /shared/utils
+env | grep DRY_RUN
+env | grep NUM_RUNS

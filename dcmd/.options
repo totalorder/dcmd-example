@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+echo "DRY_RUN -d --dry-run Do a dry run"
+echo "NUM_RUNS -n --num-runs: <num> Number of runs"
