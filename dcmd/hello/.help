@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+source /shared/bash-setup
+source /shared/utils
+
+__hello__help () {
+    [[ ! -z "$1" ]] && echo "$1" >&2
+    cat << EOF >&2
+Usage: $0 <command-name>
+EOF
+    exit 1
+}
+
+POSITIONAL=()
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -d|--description-only)
+        DESCRIPTION_ONLY="y"
+        shift
+        ;;
+        *)
+        POSITIONAL+=("$1")
+        shift
+        ;;
+    esac
+done
+set -- "${POSITIONAL[@]}"
+
+__validate_num_args 2 "$#" "__hello__help"
+
+CMD_PATH=$1
+CMD_NAME=$2
+echo "Talk to the world"
+if [[ ! -z "${DESCRIPTION_ONLY:-}" ]]; then
+    exit 0
+fi
+
+echo ""
+echo "commands:"
+echo "    space  Say hello world from space"
+echo "    world  Say hello world"
+for DIRECTORY in $(ls ${CMD_PATH}); do
+    if [[ "${DIRECTORY}" == "space" || "${DIRECTORY}" == "world" ]]; then
+        continue
+    fi
+
+    echo "    ${DIRECTORY}   ???"
+done

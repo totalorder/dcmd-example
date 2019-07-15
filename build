@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+DCMD_BASE="${DCMD_BASE:-totalorder/dcmd-alpine:latest}"
+DCMD_IMAGE="${DCMD_IMAGE:-totalorder/dcmd-example-alpine:latest}"
+echo "Building image: ${DCMD_IMAGE}"
+docker build \
+    --build-arg DCMD_VERSION="${DCMD_IMAGE}.$(git rev-parse --short HEAD).$(date -u "+%Y-%m-%dT%H:%M:%S")" \
+    --build-arg DCMD_BASE_ARG="${DCMD_BASE}" \
+    --build-arg DCMD_IMAGE_ARG="${DCMD_IMAGE}" \
+    -t "${DCMD_IMAGE}" .
+

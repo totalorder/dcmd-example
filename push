@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+if [[ -z "$1" ]]; then
+    echo "Usage: ./push <foundation>"
+    echo ""
+    echo "Example usage:"
+    echo "  ./push bionic"
+    exit 1
+fi
+
+FOUNDATION=$1
+DCMD_IMAGE="totalorder/dcmd-example-${FOUNDATION}:latest"
+docker push "${DCMD_IMAGE}"
