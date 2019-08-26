@@ -1,0 +1,3 @@
+An example cli made with "dcmd"
+
+Showcases how to include binaries, bash-scripts, etc. organized into packages along with all dependencies.
