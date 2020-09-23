@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+__xdg_open() {
+  while IFS= read -r line; do
+    xdg-open "$line"
+    #printf 'X: %s\n' "$line"
+  done
+}
+
+__shutdown() {
+#  # Get our process group id
+#  PGID=$(ps -o pgid=$$ | grep -o "[0-9]*")
+#
+#  # Kill it in a new new process group
+#  setsid kill -- -"$PGID"
+#  exit 0
+  PGID="$(ps -o pgid=$BASHPID | grep -o "[0-9]*" | head -n 1)"
+  echo "TRAPPED From the inside: $BASHPID, pgid $PGID"
+  pstree -pg $BASHPID
+  ps -ao pid,pgid,sid,command
+  echo "notrap"
+}
+
+__listen_open() {
+  #trap __shutdown EXIT
+#  echo "Inside pid: $BASHPID"
+#  while true; do
+#    sleep 4
+#    echo "Slept some"
+#  done
+#
+#  echo "Done!!!!!!!!!"
+#  exit 0
+  nc -lk 6000 | __xdg_open
+#  while true; do
+#    echo "Container name: $1"
+#    CONTAINER_ID="$(docker ps -q --filter "name=$1")"
+#    echo "Container id: ${CONTAINER_ID}"
+#    if [[ -n "${CONTAINER_ID}" ]]; then
+#      docker ps
+#      docker inspect "${CONTAINER_ID}"
+#      PORT="$(docker inspect -f '{{(index (index .NetworkSettings.Ports "6000/tcp") 0).HostPort}}' "${CONTAINER_ID}")"
+#    fi
+#    if [[ -n "${PORT}" ]]; then
+#      while true; do
+#        echo "Connecting to localhost ${PORT}"
+#        nc localhost "${PORT}" | __xdg_open
+#        echo "Failed to connect to port ${PORT}. Trying again..."
+#        sleep 1
+#      done
+#    fi
+#    echo "Failed to find port of container $1. Trying again..."
+#    sleep 1
+#  done
+#
+#  exit 0
+}
+
+
+#CONTAINER_ID="$(docker ps -q)"
+#echo "Outside pid: $$"
+#export -f "__listen_open"
+#export -f "__shutdown"
+#export -f "__xdg_open"
+#setsid bash -c "__listen_open $1" & #) > /dev/null 2>&1
+#LISTENER_PID="$!"
+#echo "Outside pid: $BASHPID ($$), Inside pid? ${LISTENER_PID}"
+#echo "Jobs"
+#jobs
+#disown %1
+#echo "Jobs"
+#jobs
+
+#echo "Pstree: ${LISTENER_PID}"
+#pstree -pg ${LISTENER_PID}
+
+__kill_listener () {
+  #echo "Pstree: ${LISTENER_PID}"
+  #ps -ao pid,pgid,sid,command
+
+  #pstree -pg $$
+  PGID="$(ps -o pgid=${LISTENER_PID} | grep -o "[0-9]*" | head -n 1)"
+  #SID="$(ps -o sid=${LISTENER_PID} | grep -o "[0-9]*" | head -n 1)"
+  #ps -s $$ -o pid=
+  #echo "Killing listener with pid ${LISTENER_PID} from pid $$ (pgid ${PGID}, sid ${SID})"
+  #echo "Killing pgid: $PGID"
+  #exec 2> /dev/null
+  #kill ${LISTENER_PID}
+  kill -- "-${PGID}" 2> /dev/null #&& wait ${LISTENER_PID} 2> /dev/null && wait ${PGID} 2> /dev/null #2>&1
+  #pkill -9 -P "${LISTENER_PID}"
+  #pkill -9 -P "${LISTENER_PID}"
+  echo "Killed and waited for"
+  #pstree -pg $$
+
+  #pkill -9 -g "${PGID}"
+  #echo "Pstree: ${LISTENER_PID}"
+  #pstree -pg ${LISTENER_PID}
+}
+
+#trap __kill_listener EXIT
+
+#echo "Sleeping..."
+#sleep 10
+#echo "Done sleeping. Exiting!"
+#__kill_listener
+#while IFS= read -r line; do
+  #xdg-open "${line}"
+#  printf 'X: %s\n' "$line"
+#done
+
+echo "Listening to port $1..."
+nc -lk "$1" | __xdg_open

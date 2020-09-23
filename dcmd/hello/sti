@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+while IFS= read -r line; do
+  printf 'X: %s\n' "$line"
+done

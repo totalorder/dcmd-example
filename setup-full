@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+set -o pipefail
+(cd ~/dev/dcmd-spotify/ && ./build) && \
+  ./build && \
+  (rm ~/.config/exa/last-update-check || true) && \
+  docker run -i "$(cat DCMD_IMAGE)" meta install-instructions | bash
+#echo "Created executable ./se"

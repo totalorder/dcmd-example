@@ -10,4 +10,5 @@ fi
 FOUNDATION=$1
 export DCMD_BASE="totalorder/dcmd-${FOUNDATION}:latest"
 export DCMD_IMAGE="totalorder/dcmd-example-${FOUNDATION}:latest"
-./build && bash -c "$(docker run --rm -i "${DCMD_IMAGE}" meta install-instructions)"
+./build && echo -e "y\n" | bash <(docker run --rm -i "${DCMD_IMAGE}" meta install-instructions)
+
